@@ -28,8 +28,16 @@ class search_pair {
             return null;
         }
 
-        // check if the string starts with a colon followed by a word
-        if (preg_match('/^:(\S+)(.*)$/s', $input, $matches)) {
+        // check if the string starts with a colon followed by a space
+        // (this pattern replaces the old ":en query" search habit while preventing web browser's from treating the query as a URL)
+        // before: ":en query" => after: ": query"
+        if (preg_match('/^:\s(.*)$/s', $input, $matches)) {
+            // query => everything after the colon and space
+            // bang => none
+            return new search_pair(ltrim($matches[1]), '');
+        }
+        // check if the string starts with a colon followed by a word (extract bang)
+        else if (preg_match('/^:(\S+)(.*)$/s', $input, $matches)) {
             // query => everything after the first word
             // bang => first word
             return new search_pair(ltrim($matches[2]), trim($matches[1]));
